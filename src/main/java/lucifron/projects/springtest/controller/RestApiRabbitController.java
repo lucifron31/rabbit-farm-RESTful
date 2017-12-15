@@ -6,7 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
@@ -46,17 +50,36 @@ public class RestApiRabbitController {
     }
     // -------------------Создать кролика великана-------------------------------------------
 
-    @RequestMapping(value = "/rabbit/", method = RequestMethod.POST)
-    public ResponseEntity<?> createUser(@RequestBody Rabbit rabbit, UriComponentsBuilder ucBuilder) {
-
+    @RequestMapping(value = "/rabbit/{name}&{color}", method = RequestMethod.POST)
+    public ResponseEntity<?> createUser(
+            /*@RequestBody Rabbit rabbit
+            ,*/ @PathVariable("name") String name
+            , @PathVariable("color") String color
+            , UriComponentsBuilder ucBuilder) {
+        Rabbit rabbit;
         try {
+            rabbit = new Rabbit(name, color);
             rabbitService.createRabbit(rabbit);
         } catch (Exception e) {
             return new ResponseEntity(new Exception("Unable to create. A User with name " +
-                    rabbit.getName() + " already exist."), HttpStatus.CONFLICT);
+                    /*rabbit.getName() +*/ " already exist."), HttpStatus.CONFLICT);
         }
         HttpHeaders headers = new HttpHeaders();
-        headers.setLocation(ucBuilder.path("/rabbit_api/rabbit/{id}").buildAndExpand(rabbit.getName()).toUri());
+        headers.setLocation(ucBuilder.path("/rabbit_api/rabbit/{name}&{color}").buildAndExpand(rabbit.getName()).toUri());
         return new ResponseEntity<String>(headers, HttpStatus.CREATED);
+    }
+
+    /**
+     * Создать кролика великана.
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/rabbit/new/{name}&{color}", method = RequestMethod.GET)
+    public Rabbit createRabbit(Model model, @PathVariable("name") String name, @PathVariable("color") String color) throws Exception {
+        Rabbit rabbit = new Rabbit(name, color);
+        rabbitService.createRabbit(rabbit);
+        model.addAttribute("rabbit", rabbit);
+        return rabbit;
     }
 }
