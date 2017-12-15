@@ -95,20 +95,6 @@ public class RabbitServiceImplTest {
 
     @Test
     public void deleteRabbit() throws Exception {
-        service.getRabbits().clear();
-        String rabbitName = "rabbit_1";
-        String rabbitColor = "green";
-        int rabbitAge = 1;
-        URL rabbitPhoto = new URL("http://google.com");
-        Rabbit rabbit = new Rabbit(rabbitName, rabbitColor, rabbitAge, rabbitPhoto);
-        rabbit.setName(rabbitName);
-        rabbit.setColor(rabbitColor);
-        rabbit.setAge(rabbitAge);
-        rabbit.setPhoto(rabbitPhoto);
-        int j = rabbit.hashCode();
-        service.createRabbit(rabbit);
-        service.deleteRabbit(rabbit);
-        ArrayList<Rabbit> rabbits = service.getRabbits();
-        Assert.assertFalse(rabbits.contains(rabbit));
+
     }
 }
