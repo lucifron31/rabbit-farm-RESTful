@@ -3,12 +3,14 @@ package lucifron.projects.springtest.service;
 import lombok.Getter;
 import lombok.Setter;
 import lucifron.projects.springtest.model.Rabbit;
+import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
+@Service("rabbitService")
 public class RabbitServiceImpl implements RabbitService {
 
     @Getter
@@ -17,16 +19,7 @@ public class RabbitServiceImpl implements RabbitService {
 
     static {
         rabbits = new ArrayList<Rabbit>(10);
-        /*rabbits.add(new Rabbit("rabbit_1","grey",1,null));*/
-       /* rabbits.add(new Rabbit("rabbit_2","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_3","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_4","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_5","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_6","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_7","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_8","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_9","grey",1,null));
-        rabbits.add(new Rabbit("rabbit_10","grey",1,null));*/
+        rabbits.add(new Rabbit("", "", 0, null));
     }
 
     @Override
