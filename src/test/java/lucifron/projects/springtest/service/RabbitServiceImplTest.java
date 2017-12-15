@@ -1,11 +1,11 @@
 package lucifron.projects.springtest.service;
 
+import lombok.NonNull;
 import lucifron.projects.springtest.model.Rabbit;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.net.URL;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 
 
@@ -20,81 +20,129 @@ public class RabbitServiceImplTest {
 
     @Test
     public void findByName() throws Exception {
-
+        String rabbitName = "Tom";
+        Rabbit rabbit = new Rabbit(
+                rabbitName,
+                "black",
+                2,
+                new URL("http://google.com")
+        );
+        rabbitsClean();
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        rabbits.add(rabbit);
+        Assert.assertTrue(isExistRabbit(rabbit));
+        Assert.assertEquals(rabbit, service.findByName(rabbitName));
     }
 
     @Test
     public void findByColor() throws Exception {
-
+        String rabbitColor = "black";
+        Rabbit rabbit = new Rabbit(
+                "Tom",
+                rabbitColor,
+                2,
+                new URL("http://google.com")
+        );
+        rabbitsClean();
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        rabbits.add(rabbit);
+        Assert.assertTrue(isExistRabbit(rabbit));
+        Assert.assertEquals(rabbit, service.findByColor(rabbitColor));
     }
 
     @Test
     public void findByAge() throws Exception {
+        int rabbitAge = 2;
+        Rabbit rabbit = new Rabbit(
+                "Tom",
+                "black",
+                rabbitAge,
+                new URL("http://google.com")
+        );
+        rabbitsClean();
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        rabbits.add(rabbit);
+        Assert.assertTrue(isExistRabbit(rabbit));
+        Assert.assertEquals(rabbit, service.findByAge(rabbitAge));
     }
 
     @Test
     public void findByPhoto() throws Exception {
+
     }
 
     @Test
     public void createRabbit() throws Exception {
-        service.getRabbits().clear();
-        String rabbitName = "rabbit_1";
-        String rabbitColor = "green";
-        int rabbitAge = 1;
-        URL rabbitPhoto = new URL("http://google.com");
-        Rabbit rabbit = new Rabbit(rabbitName, rabbitColor, rabbitAge, rabbitPhoto);
-        rabbit.setName(rabbitName);
-        rabbit.setColor(rabbitColor);
-        rabbit.setAge(rabbitAge);
-        rabbit.setPhoto(rabbitPhoto);
-        int j = rabbit.hashCode();
+        Rabbit rabbit = new Rabbit(
+                "Tom",
+                "black",
+                2,
+                new URL("http://google.com")
+        );
+        rabbitsClean();
         service.createRabbit(rabbit);
-
-        ArrayList<Rabbit> rabbits = service.getRabbits();
-        boolean isExist = false;
-        for (Rabbit rabbitEntry : rabbits) {
-            int i = rabbitEntry.hashCode();
-            if (i == j) {
-                String format = MessageFormat.format(
-                        "Кролик c менем {0} возрастом {1} лет, цветом {2} и фото смотрите {3} аккуратно помещен в клетку и ждет...."
-                        , rabbitEntry.getName(), rabbitEntry.getAge(), rabbitEntry.getColor(), rabbitEntry.getPhoto());
-                System.out.println(format);
-                isExist = true;
-
-            }
-        }
-        Assert.assertTrue(isExist);
+        Assert.assertTrue(isExistRabbit(rabbit));
     }
 
     @Test
     public void updateRabbit() throws Exception {
-        RabbitServiceImpl.getRabbits().clear();
-        String rabbitName = "rabbit_1";
-        String rabbitColor = "green";
-        int rabbitAge = 1;
-        URL rabbitPhoto = new URL("http://google.com");
-        Rabbit rabbitTom = new Rabbit(rabbitName, rabbitColor, rabbitAge, rabbitPhoto);
-        rabbitTom.setName(rabbitName);
-        rabbitTom.setColor(rabbitColor);
-        rabbitTom.setAge(rabbitAge);
-        rabbitTom.setPhoto(rabbitPhoto);
-
+        rabbitsClean();
+        Rabbit rabbit = new Rabbit(
+                "Tom",
+                "black",
+                2,
+                new URL("http://google.com")
+        );
+        int oldRabbitHashCode = rabbit.hashCode();
+        // Add rabbit to box
         ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
-        rabbits.add(rabbitTom);
-
-        Rabbit rabbitTomNew = new Rabbit(rabbitName, rabbitColor, rabbitAge, rabbitPhoto);
-        rabbitTomNew.setName(rabbitName);
-        rabbitTomNew.setColor("pink");
-        rabbitTomNew.setAge(3);
-        rabbitTomNew.setPhoto(rabbitPhoto);
-        service.updateRabbit(rabbitTomNew);
-        System.out.println(RabbitServiceImpl.getRabbits());
-        Assert.assertEquals(rabbitTomNew, rabbitTom);
+        rabbits.add(rabbit);
+        Assert.assertTrue(isExistRabbit(rabbit));
+        Rabbit betterRabbit = new Rabbit(
+                "Tom",
+                "black",
+                2,
+                new URL("http://google.com")
+        );
+        int betterRabbitHashCode = betterRabbit.hashCode();
+        // Rabbits is equals
+        Assert.assertEquals(oldRabbitHashCode, betterRabbitHashCode);
+        // Change color
+        betterRabbit.setColor("pink");
+        service.updateRabbit(betterRabbit);
+        Assert.assertNotEquals(oldRabbitHashCode, betterRabbit.hashCode());
     }
 
     @Test
     public void deleteRabbit() throws Exception {
+        Rabbit rabbit = new Rabbit(
+                "Tom",
+                "black",
+                2,
+                new URL("http://google.com")
+        );
+        rabbitsClean();
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        rabbits.add(rabbit);
+        Assert.assertTrue(isExistRabbit(rabbit));
+        service.deleteRabbit(rabbit);
+        Assert.assertFalse(isExistRabbit(rabbit));
+    }
 
+    private boolean isExistRabbit(@NonNull Rabbit rabbit) {
+        int rabbitHashCode = rabbit.hashCode();
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        for (Rabbit rabbitEntry : rabbits) {
+            if (rabbitHashCode == rabbitEntry.hashCode())
+                return true;
+        }
+
+        return false;
+    }
+
+    private void rabbitsClean() {
+        ArrayList<Rabbit> rabbits = RabbitServiceImpl.getRabbits();
+        if (rabbits != null)
+            rabbits.clear();
     }
 }
