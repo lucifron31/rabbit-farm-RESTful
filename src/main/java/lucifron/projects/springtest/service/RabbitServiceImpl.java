@@ -18,8 +18,11 @@ public class RabbitServiceImpl implements RabbitService {
     private static ArrayList<Rabbit> rabbits;
 
     static {
-        rabbits = new ArrayList<Rabbit>(10);
-        rabbits.add(new Rabbit("", "", 0, null));
+        rabbits = new ArrayList<>();
+        for (int i = 0; i < 1000; i++) {
+            rabbits.add(new Rabbit("кролик" + i, "", i, null));
+        }
+
     }
 
     @Override
@@ -71,7 +74,7 @@ public class RabbitServiceImpl implements RabbitService {
     public Rabbit findByPhoto(URL url) throws Exception {
         if (!rabbits.isEmpty()) {
             for (Rabbit rabbit : rabbits) {
-                if (url.equals(rabbit.getPhoto())) {
+                if (url.toURI().equals(rabbit.getPhoto().toURI())) {
                     return rabbit;
                 }
             }
@@ -89,7 +92,11 @@ public class RabbitServiceImpl implements RabbitService {
     @Override
     public void updateRabbit(Rabbit rabbit) throws Exception {
         final String rabbitName = rabbit.getName();
-        if (rabbit != null && rabbitName != null && !rabbitName.isEmpty()) {
+        if (rabbitName == null ) {
+            throw new Exception("Ошибка при обновлении кролика!");
+        }
+
+        if (rabbit != null) {
             if (!rabbits.isEmpty()) {
                 for (Rabbit rabbitEntry : rabbits) {
                     if (rabbitName.equals(rabbitEntry.getName())) {
