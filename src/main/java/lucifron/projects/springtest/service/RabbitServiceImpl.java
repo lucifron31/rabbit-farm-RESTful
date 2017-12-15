@@ -53,7 +53,7 @@ public class RabbitServiceImpl implements RabbitService {
         if (color != null && !color.isEmpty()) {
             if (!rabbits.isEmpty()) {
                 for (Rabbit rabbit : rabbits) {
-                    if (color.equals(rabbit.getName())) {
+                    if (color.equals(rabbit.getColor())) {
                         return rabbit;
                     }
                 }
